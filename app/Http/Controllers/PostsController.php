@@ -7,11 +7,12 @@ use App\Post;
 
 class PostsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __constructor () {
+        $this->middlware('auth')->except(['index', 'show']);
+
+    }
+
+    
     public function index()
     {
         $posts = Post::all();
@@ -49,9 +50,12 @@ class PostsController extends Controller
         // $post->body = request('body');
 
         // $post->save();
-        Post::create(request(['title', 'body']));
+        auth()->user()->publish(
+            new Post(request(['title', 'body']))
+        );
+        // Pokst::create(request(['title', 'body']));
 
-        return redirect()->back();
+        return redirect()->home();
     }
 
     /**
